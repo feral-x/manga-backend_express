@@ -32,7 +32,7 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
 			const {id} = verified;
 			(req as any).user = {id}
 			
-			const {token, refreshToken: refresh_token} = createPairTokens(req, res, verified.id)
+			const {token, refresh_token} = createPairTokens(req, res, verified.id)
 			
 			saveTokens(res, {token, refresh_token})
 			

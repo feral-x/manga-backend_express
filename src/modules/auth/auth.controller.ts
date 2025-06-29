@@ -4,6 +4,7 @@ import {ZodValidate} from "../../utils/zod.validate";
 import {CreateUserSchema, LoginUserSchema} from "./dto/auth.schema";
 import {createPairTokens, saveTokens} from "../../utils/tokens-utils";
 import * as argon2 from 'argon2';
+import {ClearUserOutput} from "../../utils/clearUserOutput";
 export const register = async (req: Request, res: Response, ):Promise<void> => {
 	const validate = ZodValidate(CreateUserSchema, req, res);
 	if(!validate) {
@@ -28,8 +29,8 @@ export const register = async (req: Request, res: Response, ):Promise<void> => {
 	const {token, refresh_token} = createPairTokens(req, res, new_user.id)
 	saveTokens(res, {token, refresh_token})
 	
-	const {password:user_password, createdAt, updatedAt, ...user_without_password} = new_user;
-	res.status(201).json({user: user_without_password})
+	
+	res.status(201).json({user: ClearUserOutput(new_user)})
 	return;
 }
 
@@ -52,6 +53,5 @@ export const login = async (req: Request, res: Response):Promise<void> => {
 	}
 	const {token, refresh_token} = createPairTokens(req, res, user.id)
 	saveTokens(res, {token, refresh_token})
-	const {password:user_password, createdAt, updatedAt, ...user_without_password} = user;
-	res.status(200).json({user: user_without_password})
+	res.status(200).json({user: ClearUserOutput(user)})
 }
