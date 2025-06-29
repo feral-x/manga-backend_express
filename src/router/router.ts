@@ -1,7 +1,9 @@
 import { Router } from 'express'
-import {authMiddleware} from "../middleware/auth.middleware";
-import {testController} from "../controllers/auth.controller";
+import {authMiddleware} from "../middlewares/auth.middleware";
+import {AuthRoutes} from "../modules/auth/auth.routes";
 
 const router = Router()
-router.post('/', authMiddleware, testController)
+
+router.use("/auth", AuthRoutes)
+
 export default router
