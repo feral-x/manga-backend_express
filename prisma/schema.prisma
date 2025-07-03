@@ -17,3 +17,28 @@ model User {
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
 }
+
+model Manga {
+    id          Int      @id @default(autoincrement())
+    title       String
+    description String
+    author      String
+    genres      Genre[]
+    images      Images[]
+}
+
+model Images {
+    id         Int    @id @default(autoincrement())
+    Manga      Manga  @relation(fields: [mangaId], references: [id], onDelete: Cascade)
+    mangaId    Int
+    pageNumber Int
+    path       String
+}
+
+model Genre {
+    id          Int    @id @default(autoincrement())
+    title       String
+    description String
+    Manga       Manga? @relation(fields: [mangaId], references: [id])
+    mangaId     Int?
+}
