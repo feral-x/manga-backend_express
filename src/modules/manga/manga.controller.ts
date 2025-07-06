@@ -87,7 +87,7 @@ export const updateMangaController = async (req: Request, res: Response):Promise
 	
 	const paths = await saveFiles(req.files as Express.Multer.File[], id)
 	
-	const updateTransaction = await prisma.$transaction(async tx => {
+	await prisma.$transaction(async tx => {
 		const updateManga = await tx.manga.updateMany({
 			where: {
 				id: id
@@ -113,15 +113,42 @@ export const updateMangaController = async (req: Request, res: Response):Promise
 			}))
 		})
 		
-		return {
-			message: `Manga update complete`
-		}
-		
 	})
 	
 	res.status(200).json({
-		updateTransaction
+		message: "Manga Update Complete"
 	})
 
+	return
+}
+
+export const getMangaPerPageController = async (req: Request, res: Response): Promise<void> => {
+	let {pageNumber, pageSize} = req.query
+	if(!pageNumber || !pageSize) {
+		res.status(400).json({
+			message: "Manga Getting manga per Page Failed, bad data"
+		})
+		return
+	}
+	const skip = (+pageNumber - 1) * +pageSize
+	console.log(pageNumber, pageSize)
+	console.log(skip)
+	if(typeof skip !== 'number') {
+		res.status(400).json({
+			message: "Manga Getting manga per Page Failed, bad data"
+		})
+		return
+	}
+	
+	
+	const manga = await prisma.manga.findMany({
+		where: {},
+		skip: skip,
+		take: +pageSize
+	})
+	
+	res.status(200).json({
+		manga
+	})
 	return
 }
