@@ -42,7 +42,7 @@ export const createMangaController = async (req: Request, res: Response) => {
 			}
 		})
 		
-		const paths = await saveFiles(req.files as Express.Multer.File[])
+		const paths = await saveFiles(req.files as Express.Multer.File[], createManga.id)
 		
 		await tx.images.createMany({
 			data: paths.map((path, index)=>({
