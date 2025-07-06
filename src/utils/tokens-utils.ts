@@ -5,10 +5,10 @@ export const createPairTokens = (req: Request, res: Response, id: number) => {
 	const decodeToken = process.env.JWT_SECRET;
 	if(!decodeToken) throw new Error('Env token not found');
 	const token = jwt.sign({id}, decodeToken, {
-		expiresIn: '15m',
+		expiresIn: 15 * 60 * 1000,
 	});
 	const refresh_token = jwt.sign({id}, decodeToken, {
-		expiresIn: '7d',
+		expiresIn: 7 * 24 * 60 * 60 * 1000 * 2,
 	})
 	
 	return {

@@ -8,14 +8,12 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
 	const token = req.cookies?.token;
 	const refreshToken = req.cookies?.refresh_token;
 	
-	
-	if(!token) {
-		res.status(401).json({message: "No token provided"});
-		return;
-	}
-	
-		
 	try {
+		
+		if(!token) {
+			throw new Error('Invalid token');
+		}
+		
 		const decodeToken = process.env.JWT_SECRET || 'no token provided';
 		const verified = jwt.verify(token, decodeToken) as JwtPayloadWithId;
 		const {id} = verified;
@@ -24,7 +22,7 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
 	} catch (error) {
 		try {
 			if(!refreshToken) {
-				res.status(401).json({message: "No refresh token provided"});
+				res.status(401).json({message: "No tokens provided"});
 				return;
 			}
 			const decodeToken = process.env.JWT_SECRET || 'no token provided';
